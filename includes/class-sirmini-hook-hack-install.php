@@ -16,14 +16,24 @@ class Sirmini_Hook_Hack_Install
 					"// Initialize the filter globals.", 
 					$content );
 			$content = str_replace( 
-					'global $wp_filter, $merged_filters, $wp_current_filter;', 
-					'global $wp_filter, $merged_filters, $wp_current_filter;' . "\n" .
+					'function apply_filters( $tag, $value ) {', 
+					'function apply_filters( $tag, $value ) {' . "\n" .
 					'Sirmini_Hook_Hack_Logger::log_filter( $tag );',
 					$content );
 			$content = str_replace(
-					'if ( ! isset($wp_actions[$tag]) )',
-					'Sirmini_Hook_Hack_Logger::log_action( $tag );' . "\n" .
-					'if ( ! isset($wp_actions[$tag]) )',
+					'function apply_filters_ref_array($tag, $args) {',
+					'function apply_filters_ref_array($tag, $args) {' . "\n" .
+					'Sirmini_Hook_Hack_Logger::log_filter( $tag );',
+					$content );
+			$content = str_replace(
+					'function do_action($tag, $arg = \'\') {',
+					'function do_action($tag, $arg = \'\') {' . "\n" .
+					'Sirmini_Hook_Hack_Logger::log_action( $tag );',
+					$content );
+			$content = str_replace(
+					'function do_action_ref_array($tag, $args) {',
+					'function do_action_ref_array($tag, $args) {' . "\n" .
+					'Sirmini_Hook_Hack_Logger::log_action( $tag );',
 					$content );
 			file_put_contents( $plugin_php_file, $content );		
 			define( 'SIRMINI_HOOK_HACK_INSTALLED', true );	
